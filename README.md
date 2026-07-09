@@ -298,7 +298,6 @@ Stretch features include:
 
 These features are not required for the first working version, but they will make the final project more professional, impressive, and industry-relevant. 
 
-6 
 
 ## **6. Out-of-Scope** 
 

@@ -1,325 +1,391 @@
-## **Arx AI — Requirements Document** 
+# Arx AI
 
-## **1. Main User Workflow** 
+**Arx AI** is an AI-powered cyber risk intelligence platform designed to help Application Security Analysts and Security Engineers convert vulnerability scan findings from sandboxed applications into prioritized business risk insights, dynamic Key Risk Indicators, and professional security reports.
 
-Arx AI is designed for an Application Security Analyst or Security Engineer who needs to assess application security risk and communicate the results clearly. 
+The project focuses on the intersection of **application security**, **AI enrichment**, **risk scoring**, **data visualization**, and **enterprise-style cyber risk reporting**.
 
-The main workflow begins when the user opens the Arx AI dashboard and views the current cyber risk summary. From there, the user navigates to the approved sandbox targets page, selects a sandboxed vulnerable application, and starts a vulnerability scan. 
+> Arx AI is designed for educational, defensive, and authorized security testing only. It does not support scanning public websites or real systems.
 
-Once the scan is started, Arx AI creates a scan job and runs the scan in the background. The system collects raw vulnerability findings, stores them in the database, and then passes them through an AI enrichment process. The AI enrichment process classifies each finding, explains the risk in plain language, suggests remediation steps, and maps the finding to relevant security categories such as OWASP. 
+---
 
-After enrichment, Arx AI calculates a business risk score for each finding and updates the KRI dashboard. The user can then review the highest-risk findings, filter results by severity, target, vendor, date, or risk score, and generate a summary report for technical or executive review. 
+## Project Overview
 
-In summary, the main workflow is: 
+Traditional vulnerability scanners can generate many technical findings, but those findings are often difficult to prioritize, explain, and communicate to non-technical stakeholders.
 
-1. User opens the Arx AI dashboard. 
+Arx AI aims to solve this problem by taking raw vulnerability findings from approved sandbox targets and converting them into:
 
-2. User views the current cyber risk summary. 
+* AI-generated plain-English explanations
+* OWASP category mappings
+* Business impact summaries
+* Remediation recommendations
+* Calculated risk scores
+* KRI dashboard metrics
+* Scan summary reports
 
-3. User navigates to the approved sandbox targets page. 
+The goal is not just to detect vulnerabilities, but to help answer:
 
-4. User selects a sandboxed vulnerable application. 
+> Which security issues matter most, why do they matter, and what should be fixed first?
 
-5. User starts a vulnerability scan. 
+---
 
-6. Arx AI creates a scan job. 
+## Primary User
 
-7. The scanner runs in the background. 
+The primary user of Arx AI is an:
 
-8. Raw vulnerability findings are collected and stored. 
+**Application Security Analyst / Security Engineer**
 
-9. AI enrichment classifies and explains the findings. 
+This user is responsible for reviewing vulnerability findings, prioritizing risk, communicating security concerns, and helping teams understand what needs to be fixed.
 
-10. Arx AI calculates business risk scores. 
+---
 
-11. The KRI dashboard is updated. 
+## Core Workflow
 
-12. User reviews prioritized findings. 
+The main Arx AI workflow is:
 
-13. User generates a scan or risk summary report. 
+```text
+Approved Sandbox Target
+        ↓
+Scan Job Created
+        ↓
+Scanner Runs in Background
+        ↓
+Raw Findings Stored
+        ↓
+AI Enrichment
+        ↓
+Risk Scoring
+        ↓
+KRI Dashboard
+        ↓
+Report Generation
+```
 
-## **2. Functional Requirements** 
+A user should be able to:
 
-## **2.1 Dashboard Requirements** 
+1. Open the Arx AI dashboard.
+2. View the current cyber risk summary.
+3. Select an approved sandbox target.
+4. Start a scan.
+5. View scan status and scan history.
+6. Review raw vulnerability findings.
+7. View AI-enriched explanations and remediation guidance.
+8. Review calculated risk scores.
+9. Analyze KRI dashboard metrics.
+10. Generate a scan summary report.
 
-FR1: The system shall display a cyber risk summary when the user opens the dashboard. 
+---
 
-FR2: The dashboard shall show key metrics including total scans, total findings, critical findings, average risk score, and highest-risk target. 
+## MVP Features
 
-FR3: The dashboard shall display cyber risk trends over time. 
+The MVP version of Arx AI will include:
 
-1 
+* Frontend dashboard
+* Backend API
+* PostgreSQL database
+* Approved sandbox target management
+* Scan job creation
+* Background scan execution
+* Raw finding storage
+* AI enrichment of findings
+* Business risk scoring
+* KRI dashboard
+* Findings table with filtering and sorting
+* Basic scan summary report
+* Audit logging for important system events
+
+---
+
+## Planned Stretch Features
+
+After the MVP is complete, the following features may be added:
+
+* PDF executive report generation
+* Vendor risk scoring
+* MITRE ATT&CK mapping
+* Real-time scan progress updates
+* Authentication and role-based access control
+* CI/CD pipeline
+* Cloud deployment
+* Monitoring and observability with Prometheus and Grafana
+* Vector database and RAG-based security knowledge retrieval
+* Additional scanner integrations
+* Developer remediation workflow
+
+---
+
+## Technology Stack
+
+### Frontend
+
+* Next.js
+* TypeScript
+* Tailwind CSS
+* shadcn/ui
+* Recharts
+* TanStack Table
+* TanStack Query
+
+### Backend
+
+* FastAPI
+* Python
+* Pydantic
+* SQLAlchemy
+* Alembic
+
+### Database
+
+* PostgreSQL
+
+### Background Processing
+
+* Redis
+* RQ
+
+### Security Scanning
+
+* OWASP ZAP Baseline Scan
+* Python scanner wrapper scripts
+* Dockerized sandbox targets
+
+### AI Layer
+
+* LangGraph
+* LangChain
+* OpenAI API or local LLM
+* Pydantic validation for structured AI output
+
+### DevOps
+
+* Docker
+* Docker Compose
+* GitHub Actions as a stretch feature
+
+---
+
+## High-Level Architecture
+
+```text
+                         ┌──────────────────────┐
+                         │   Frontend Dashboard  │
+                         │ Next.js + TypeScript  │
+                         └───────────┬──────────┘
+                                     │
+                                     ▼
+                         ┌──────────────────────┐
+                         │     Backend API       │
+                         │       FastAPI         │
+                         └───────────┬──────────┘
+                                     │
+              ┌──────────────────────┼──────────────────────┐
+              ▼                      ▼                      ▼
+   ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐
+   │ PostgreSQL DB    │   │ Background Worker│   │ Report Generator │
+   │ Stores system    │   │ Runs async jobs  │   │ Creates reports  │
+   │ data             │   │                  │   │                  │
+   └──────────────────┘   └─────────┬────────┘   └──────────────────┘
+                                    │
+                     ┌──────────────┼──────────────┐
+                     ▼              ▼              ▼
+           ┌────────────────┐ ┌──────────────┐ ┌────────────────┐
+           │ Scanner Service│ │ AI Enrichment│ │ KRI Engine     │
+           │ Safe scanning  │ │ AI analysis  │ │ Risk scoring   │
+           └───────┬────────┘ └──────────────┘ └────────────────┘
+                   │
+                   ▼
+        ┌──────────────────────────┐
+        │ Approved Sandbox Targets │
+        │ Juice Shop / DVWA / Lab  │
+        └──────────────────────────┘
+```
 
-FR4: The dashboard shall display the distribution of findings by severity. 
+---
 
-FR5: The dashboard shall display the distribution of findings by vulnerability category. 
+## Database Model
 
-FR6: The dashboard shall allow the user to filter results by severity, date, target, vendor, and risk score. 
+The MVP database model includes:
 
-FR7: The dashboard shall highlight the highest-priority risks that require attention. 
+* `targets`
+* `scan_jobs`
+* `raw_findings`
+* `enriched_findings`
+* `risk_scores`
+* `reports`
+* `audit_logs`
 
-## **2.2 Target Management Requirements** 
+Main relationship flow:
 
-FR8: The system shall display a list of approved sandbox targets. 
+```text
+targets
+   ↓
+scan_jobs
+   ↓
+raw_findings
+   ↓
+enriched_findings
+   ↓
+risk_scores
 
-FR9: Each target shall include a name, URL, environment label, vendor label, application type, and current status. 
+scan_jobs
+   ↓
+reports
 
-FR10: The system shall show whether each sandbox target is online or offline. 
+scan_jobs / targets
+   ↓
+audit_logs
+```
 
-FR11: The system shall only allow scans against preconfigured sandbox targets. 
+---
 
-FR12: The system shall prevent users from scanning arbitrary public URLs. 
+## Risk Scoring Concept
 
-FR13: The system shall clearly identify that all targets are sandboxed and intentionally vulnerable for educational and testing purposes. 
+Arx AI calculates a business risk score for each finding using a documented scoring formula.
 
-## **2.3 Scan Management Requirements** 
+A simple MVP formula may be:
 
-FR14: The user shall be able to start a vulnerability scan against an approved sandbox target. 
+```text
+Risk Score = Severity Weight × Exploitability × Asset Criticality × Vendor Exposure × Confidence
+```
 
-FR15: The system shall create a scan job whenever a scan is started. 
+The score is then normalized to a 0–100 scale and displayed as a business risk level.
 
-FR16: Each scan job shall include a unique ID, selected target, scan type, status, start time, completion time, and created-by information. 
+Example levels:
 
-FR17: The system shall track scan status using states such as queued, running, completed, and failed. 
+* Low
+* Medium
+* High
+* Critical
 
-FR18: The scanner shall run in the background so the user interface remains responsive. 
+The goal is to make vulnerability prioritization explainable and consistent.
 
-FR19: The user shall be able to view scan history. 
+---
 
-FR20: The user shall be able to view the details of an individual scan. 
+## Ethical Boundaries
 
-FR21: The system shall store scan results after the scan is completed. 
+Arx AI is built with strict ethical and safety boundaries.
 
-FR22: If a scan fails, the system shall store the failure status and display an understandable error message. 
+The platform will:
 
-2 
+* Only scan approved sandbox targets
+* Only run against intentionally vulnerable lab applications
+* Preserve raw scanner evidence
+* Validate AI-generated output before storage
+* Separate scanner evidence from AI interpretation
+* Focus on remediation and defensive risk analysis
 
-## **2.4 Finding Storage Requirements** 
+The platform will not:
 
-FR23: The system shall store raw vulnerability findings generated from each scan. 
+* Scan public websites
+* Attack real systems
+* Perform destructive actions
+* Store real company data or credentials
+* Support unrestricted offensive automation
+* Provide step-by-step exploitation guidance for real systems
 
-FR24: Each finding shall be linked to a scan job and sandbox target. 
+---
 
-FR25: Each finding shall include vulnerability type, affected endpoint, evidence summary, severity, confidence level, and timestamp. 
+## Example Approved Sandbox Targets
 
-FR26: The user shall be able to view all findings in a searchable and filterable table. 
+Arx AI may use controlled lab targets such as:
 
-FR27: The user shall be able to sort findings by severity, risk score, date, vulnerability type, target, and vendor. 
+* OWASP Juice Shop
+* DVWA
+* Custom intentionally vulnerable demo application
 
-FR28: The system shall preserve scan findings for historical risk analysis. 
+These targets should run locally or inside a private Docker network.
 
-## **2.5 AI Enrichment Requirements** 
+---
 
-FR29: The system shall use an AI enrichment process to analyze raw vulnerability findings. 
+## Project Status
 
-FR30: The AI enrichment process shall generate a plain-English explanation for each finding. 
+Current status:
 
-FR31: The AI enrichment process shall suggest remediation guidance for each finding. 
+```text
+Planning and architecture design in progress
+```
 
-FR32: The AI enrichment process shall map findings to relevant OWASP categories. 
+Completed planning artifacts:
 
-FR33: The AI enrichment process shall estimate the business impact of each finding. 
+* Requirements document
+* Functional requirements
+* Non-functional requirements
+* MVP scope
+* Stretch feature scope
+* System architecture
+* Database model / ERD
 
-FR34: The AI enrichment output shall be structured and validated before being stored. 
+Next development steps:
 
-FR35: If AI enrichment fails, the system shall keep the raw finding and mark it as requiring manual review. 
+1. Set up backend project structure.
+2. Create SQLAlchemy models.
+3. Configure PostgreSQL and Alembic.
+4. Build target and scan job APIs.
+5. Add background worker and Redis queue.
+6. Integrate sandbox scanner.
+7. Add AI enrichment.
+8. Build KRI dashboard.
 
-FR36: The system shall allow the user to distinguish between raw scanner output and AI-enriched analysis. 
+---
 
-## **2.6 Risk Scoring and KRI Requirements** 
+## Local Development
 
-FR37: The system shall calculate a business risk score for each vulnerability finding. 
+Local setup instructions will be added as the implementation progresses.
 
-FR38: The risk score shall consider severity, exploitability, asset criticality, confidence, and vendor exposure. 
+Planned local environment:
 
-FR39: The system shall rank findings from highest risk to lowest risk. 
+```text
+Frontend: Next.js
+Backend: FastAPI
+Database: PostgreSQL
+Queue: Redis
+Worker: RQ
+Sandbox Targets: Docker Compose
+```
 
-FR40: The system shall calculate Key Risk Indicators, including critical findings, average risk score, highest-risk target, highest-risk vendor, and most common vulnerability category. 
+Expected future command:
 
-3 
+```bash
+docker compose up --build
+```
 
-FR41: The system shall display KRI trends by month and year. 
+---
 
-FR42: The system shall allow the user to compare risk across targets, vendors, and time periods. 
+## Repository Structure
 
-FR43: The system shall update dashboard metrics when new scan results are processed. 
+Planned structure:
 
-## **2.7 Reporting Requirements** 
+```text
+arx-ai/
+  backend/
+    app/
+      models/
+      schemas/
+      api/
+      services/
+      workers/
+      db/
+    tests/
 
-FR44: The user shall be able to generate a scan summary report. 
+  frontend/
+    app/
+    components/
+    lib/
 
-FR45: The report shall include scan details, top findings, severity levels, risk scores, AI explanations, and remediation recommendations. 
+  docs/
+    requirements.md
+    architecture.md
+    database-model.md
 
-FR46: The report shall include an executive summary written in non-technical language. 
+  docker-compose.yml
+  README.md
+```
 
-FR47: The report shall identify the highest-priority findings that should be addressed first. 
+---
 
-FR48: The system shall support PDF report generation as a stretch feature. 
+## Disclaimer
 
-## **3. Non-Functional Requirements** 
+Arx AI is an educational cyber risk intelligence platform designed for authorized testing against sandboxed, intentionally vulnerable applications.
 
-## **3.1 Security Requirements** 
+It must not be used to scan, attack, or assess systems without explicit permission.
 
-NFR1: The system shall only allow scans against approved sandbox targets. 
-
-NFR2: The system shall not allow scanning of real public websites. 
-
-NFR3: The system shall not perform destructive actions against any target. 
-
-NFR4: The system shall store sensitive configuration values, such as API keys, using environment variables. 
-
-NFR5: The system shall avoid storing real credentials, real company data, or sensitive personal information. 
-
-NFR6: The system shall include clear ethical-use limitations in the documentation. 
-
-NFR7: The system shall maintain audit logs for important actions such as scan creation and report generation. 
-
-## **3.2 Reliability Requirements** 
-
-NFR8: A failed scan shall not crash the entire system. 
-
-NFR9: A failed AI enrichment process shall not delete or corrupt raw findings. 
-
-4 
-
-NFR10: The system shall preserve scan history and findings after processing. 
-
-NFR11: The system shall handle missing or incomplete scanner output gracefully. 
-
-NFR12: The system shall display clear error messages when something fails. 
-
-## **3.3 Performance Requirements** 
-
-NFR13: The dashboard shall load summary KRI data within a reasonable time for demo-sized datasets. 
-
-NFR14: Scan jobs shall run asynchronously so that the user interface remains usable. 
-
-NFR15: Filtering and sorting findings shall remain responsive for the expected project dataset size. 
-
-NFR16: The system shall avoid blocking frontend interactions while scans or AI enrichment tasks are running. 
-
-## **3.4 Usability Requirements** 
-
-NFR17: The dashboard shall clearly separate technical vulnerability details from business risk metrics. 
-
-NFR18: The user shall be able to identify the highest-priority risks without reading raw scanner output. 
-
-NFR19: The user interface shall use clear labels, readable tables, and understandable risk indicators. 
-
-NFR20: The system shall provide enough explanation for non-technical stakeholders to understand the business impact of findings. 
-
-## **3.5 Maintainability Requirements** 
-
-NFR21: The backend shall be organized into clear modules such as targets, scans, findings, AI enrichment, KRI calculations, and reporting. 
-
-NFR22: The frontend shall be organized into reusable components. 
-
-NFR23: The project shall include documentation for setup, architecture, usage, and ethical limitations. 
-
-NFR24: The codebase shall follow consistent naming, formatting, and project structure. 
-
-NFR25: The system shall be designed so that additional sandbox targets or scanners can be added later. 
-
-## **4. MVP Requirements** 
-
-The MVP version of Arx AI shall include the minimum set of features needed to prove the main idea. 
-
-5 
-
-The MVP shall allow a user to run a scan on a sandboxed vulnerable web application, collect vulnerability findings, enrich each finding using AI, assign a business risk score, and display the results in a KRI dashboard. 
-
-The MVP includes: 
-
-1. A working frontend dashboard. 
-
-2. A FastAPI backend. 
-
-3. A PostgreSQL database. 
-
-4. Approved sandbox target management. 
-
-5. Ability to start a scan against a sandbox target. 
-
-6. Scan job creation and status tracking. 
-
-7. Storage of raw vulnerability findings. 
-
-8. AI enrichment of findings. 
-
-9. Risk scoring for findings. 
-
-10. KRI dashboard showing summary metrics. 
-
-11. Findings table with filtering and sorting. 
-
-12. Basic scan summary report. 
-
-The MVP is considered successful if a user can complete the following flow: 
-
-1. Open Arx AI. 
-
-2. View the dashboard. 
-
-3. Select an approved sandbox target. 4. Start a scan. 5. View stored findings. 
-
-6. See AI-generated explanations and remediation guidance. 
-
-7. View calculated risk scores. 
-
-8. Review updated KRI metrics. 
-
-9. Generate a basic report. 
-
-## **5. Stretch Requirements** 
-
-The stretch features are advanced features that will be implemented after the MVP is working. 
-
-Stretch features include: 
-
-1. PDF executive report generation. 
-
-2. Vendor risk scoring. 
-
-3. MITRE ATT&CK mapping. 
-
-4. Real-time scan progress updates. 
-
-5. CI/CD pipeline. 
-
-6. Cloud deployment. 
-
-7. Authentication and role-based access control. 
-
-8. Monitoring with Prometheus and Grafana. 
-
-9. More advanced dashboard filtering by month, year, vendor, target, and vulnerability category. 
-
-10. Architecture and system design documentation suitable for a technical portfolio. 
-
-These features are not required for the first working version, but they will make the final project more professional, impressive, and industry-relevant. 
-
-
-## **6. Out-of-Scope** 
-
-The following items are outside the scope of Arx AI: 
-
-1. The platform will not scan real public websites. 
-
-2. The platform will not attack or exploit real systems. 
-
-3. The platform will not perform destructive actions. 
-
-4. The platform will not store real company data, real credentials, or private user data. 
-
-5. The platform will not attempt to replace professional enterprise security tools. 
-
-6. The platform will not provide unrestricted offensive security automation. 
-
-7. The platform will not allow users to enter arbitrary external targets for scanning. 
-
-8. The platform will not be used against systems without explicit authorization. 
-
-All scanning activity will be limited to sandboxed, intentionally vulnerable applications created for educational and testing purposes. 
-
-7 
-
+The project focuses on defensive security analysis, risk prioritization, remediation guidance, and cyber risk communication.
